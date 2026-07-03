@@ -1,0 +1,32 @@
+services:
+  - type: web
+    name: branchsense-api
+    runtime: node
+    rootDir: backend
+    plan: starter
+    buildCommand: npm install
+    preDeployCommand: node scripts/dbSetup.js
+    startCommand: npm start
+    healthCheckPath: /health
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: branchsense-db
+          property: connectionString
+      - key: ANTHROPIC_API_KEY
+        sync: false
+
+  - type: web
+    name: branchsense-web
+    runtime: static
+    rootDir: frontend
+    plan: starter
+    buildCommand: npm install && npm run build
+    staticPublishPath: dist
+    envVars:
+      - key: VITE_API_URL
+        value: https://branchsense-api.onrender.com/api
+
+databases:
+  - name: branchsense-db
+    plan: basic-256mb
