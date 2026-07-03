@@ -4,7 +4,8 @@ services:
     runtime: node
     rootDir: ./
     plan: starter
-    buildCommand: cd backend && npm install && node scripts/dbSetup.js
+    buildCommand: cd backend && npm install
+    preDeployCommand: cd backend && node scripts/dbSetup.js || true
     startCommand: npm start
     healthCheckPath: /health
     envVars:

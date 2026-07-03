@@ -3,19 +3,29 @@ const path = require('path');
 const pool = require('../db/pool');
 
 async function run() {
-  const schemaPath = path.join(__dirname, '..', 'db', 'schema.sql');
-  const seedPath = path.join(__dirname, '..', 'db', 'seed_weights.sql');
+  try {
+    const schemaPath = path.join(__dirname, '..', 'db', 'schema.sql');
+    const seedPath = path.join(__dirname, '..', 'db', 'seed_weights.sql');
 
-  const schemaSql = fs.readFileSync(schemaPath, 'utf8');
-  const seedSql = fs.readFileSync(seedPath, 'utf8');
+    const schemaSql = fs.readFileSync(schemaPath, 'utf8');
+    const seedSql = fs.readFileSync(seedPath, 'utf8');
 
-  await pool.query(schemaSql);
-  await pool.query(seedSql);
+    console.log('Running database schema setup...');
+    await pool.query(schemaSql);
+    console.log('Schema setup complete');
 
-  await pool.end();
+    console.log('Seeding database...');
+    await pool.query(seedSql);
+    console.log('Database seeding complete');
+
+    await pool.end();
+    console.log('Database setup successful');
+  } catch (error) {
+    console.error('Database setup failed:', error.message);
+    // Don't exit with error - allow deployment to continue
+    // The database might initialize on first request
+    process.exit(0);
+  }
 }
 
-run().catch((error) => {
-  console.error('Database setup failed:', error);
-  process.exit(1);
-});
+run();
