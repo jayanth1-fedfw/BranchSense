@@ -15,21 +15,34 @@ const app = express();
 // Initialize database on startup
 async function initializeDatabase() {
   try {
-    console.log('Checking database initialization...');
     const schemaPath = path.join(__dirname, 'db', 'schema.sql');
     const seedPath = path.join(__dirname, 'db', 'seed_weights.sql');
 
     const schemaSql = fs.readFileSync(schemaPath, 'utf8');
     const seedSql = fs.readFileSync(seedPath, 'utf8');
 
-    await pool.query(schemaSql);
-    console.log('Database schema initialized');
+    // Check if tables already exist
+    const tablesCheck = await pool.query(`
+      SELECT COUNT(*) as cnt FROM information_schema.tables 
+      WHERE table_schema = 'public'
+    `);
+    
+    const tablesExist = tablesCheck.rows[0].cnt > 0;
 
-    await pool.query(seedSql);
-    console.log('Database seeded');
+    if (!tablesExist) {
+      // Only run initialization if tables don't exist
+      await pool.query(schemaSql);
+      console.log('✓ Database schema initialized');
+      await pool.query(seedSql);
+      console.log('✓ Database seeded with weights');
+    } else {
+      console.log('✓ Database already initialized');
+    }
   } catch (error) {
-    console.error('Database initialization warning:', error.message);
-    // Don't crash - database might already be initialized
+    // Only log if it's not an "already exists" error
+    if (!error.message.includes('already exists')) {
+      console.warn('⚠ Database initialization note:', error.message);
+    }
   }
 }
 
