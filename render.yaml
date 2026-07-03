@@ -4,8 +4,7 @@ services:
     runtime: node
     rootDir: backend
     plan: starter
-    buildCommand: npm install
-    preDeployCommand: node scripts/dbSetup.js
+    buildCommand: npm install && node scripts/dbSetup.js
     startCommand: npm start
     healthCheckPath: /health
     envVars:
