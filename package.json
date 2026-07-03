@@ -1,0 +1,16 @@
+{
+  "name": "branchsense",
+  "version": "1.0.0",
+  "description": "BranchSense: AI-powered learning pathways",
+  "type": "module",
+  "scripts": {
+    "start": "cd backend && npm start",
+    "dev": "cd backend && npm run dev",
+    "build": "cd frontend && npm install && npm run build",
+    "install": "npm install --prefix backend && npm install --prefix frontend"
+  },
+  "workspaces": [
+    "backend",
+    "frontend"
+  ]
+}
