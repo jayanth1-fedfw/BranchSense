@@ -39,9 +39,10 @@ async function initializeDatabase() {
       console.log('✓ Database already initialized');
     }
   } catch (error) {
-    // Only log if it's not an "already exists" error
-    if (!error.message.includes('already exists')) {
-      console.warn('⚠ Database initialization note:', error.message);
+    // Ignore expected initialization cases and only log meaningful errors
+    const message = error?.message?.trim();
+    if (message && !message.includes('already exists')) {
+      console.warn('⚠ Database initialization note:', message);
     }
   }
 }
