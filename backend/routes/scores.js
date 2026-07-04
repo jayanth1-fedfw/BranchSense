@@ -37,8 +37,8 @@ router.post('/submit', async (req, res) => {
     res.json({ submitted: true, count: scores.length });
   } catch (err) {
     await client.query('ROLLBACK');
-    console.error(err);
-    res.status(500).json({ error: 'Failed to submit scores' });
+    console.error('Submit scores failed:', err);
+    res.status(500).json({ error: `Failed to submit scores: ${err.message}` });
   } finally {
     client.release();
   }
