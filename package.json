@@ -1,33 +1,30 @@
 {
-<<<<<<< HEAD
-  "name": "branchsense-backend",
+  "name": "branchsense-frontend",
   "version": "1.0.0",
-  "description": "BranchSense backend: scoring engine + API",
-  "main": "server.js",
+  "type": "module",
+  "private": true,
   "scripts": {
-    "start": "node server.js",
-    "dev": "nodemon server.js",
-    "db:setup": "psql $DATABASE_URL -f db/schema.sql && psql $DATABASE_URL -f db/seed_weights.sql",
-    "test:db": "node scripts/testDatabase.js",
-    "test:api": "node scripts/testAPI.js"
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "android:sync": "npm run build && npx cap sync android",
+    "android:open": "npx cap open android",
+    "android:run": "npm run android:sync && npx cap run android"
   },
   "dependencies": {
-    "@anthropic-ai/sdk": "^0.32.0",
-    "cors": "^2.8.5",
-    "dotenv": "^16.4.5",
-    "express": "^4.19.2",
-    "pg": "^8.12.0"
+    "@capacitor/android": "^6.1.2",
+    "@capacitor/core": "^6.1.2",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "recharts": "^2.12.7"
   },
   "devDependencies": {
-    "nodemon": "^3.1.4"
-=======
-  "name": "branchsense",
-  "version": "1.0.0",
-  "description": "BranchSense: AI-powered learning pathways",
-  "scripts": {
-    "start": "cd backend && npm start",
-    "dev": "cd backend && npm run dev",
-    "build": "cd frontend && npm install && npm run build"
->>>>>>> a608146654fed287c729648f7471aa89ab89b53b
+    "@capacitor/cli": "^6.1.2",
+    "@vitejs/plugin-react": "^4.3.1",
+    "autoprefixer": "^10.4.19",
+    "postcss": "^8.4.40",
+    "tailwindcss": "^3.4.7",
+    "typescript": "^6.0.3",
+    "vite": "^5.3.4"
   }
 }
