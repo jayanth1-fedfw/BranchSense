@@ -1,5 +1,4 @@
 {
-<<<<<<< HEAD
   "name": "branchsense-backend",
   "version": "1.0.0",
   "description": "BranchSense backend: scoring engine + API",
@@ -20,14 +19,5 @@
   },
   "devDependencies": {
     "nodemon": "^3.1.4"
-=======
-  "name": "branchsense",
-  "version": "1.0.0",
-  "description": "BranchSense: AI-powered learning pathways",
-  "scripts": {
-    "start": "cd backend && npm start",
-    "dev": "cd backend && npm run dev",
-    "build": "cd frontend && npm install && npm run build"
->>>>>>> a608146654fed287c729648f7471aa89ab89b53b
   }
 }
