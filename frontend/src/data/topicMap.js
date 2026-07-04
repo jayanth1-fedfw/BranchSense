@@ -2,12 +2,12 @@
 // max marks are placeholders; adjust per board (CBSE vs state boards differ).
 
 export const SUBJECTS_BY_STREAM = {
-  MPC: ['MATHS', 'PHYSICS', 'CHEMISTRY'],
+  MPC: ['MATHEMATICS', 'PHYSICS', 'CHEMISTRY'],
   BiPC: ['BIOLOGY', 'PHYSICS', 'CHEMISTRY'],
 };
 
 export const TOPICS_BY_SUBJECT = {
-  MATHS: [
+  MATHEMATICS: [
     { topic: 'Calculus', max: 20 },
     { topic: 'Algebra', max: 15 },
     { topic: 'Coordinate Geometry & Vectors', max: 12 },
