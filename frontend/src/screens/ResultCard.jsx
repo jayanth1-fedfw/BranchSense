@@ -1,10 +1,81 @@
+import { useRef, useState } from 'react';
 import { RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, ResponsiveContainer } from 'recharts';
+import html2canvas from 'html2canvas';
+import jsPDF from 'jspdf';
 
 export default function ResultCard({ result, studentName, onRestart }) {
   const { branches, all_scores, ai_summary } = result;
   const top = branches[0];
+  const certificateRef = useRef(null);
+  const [downloading, setDownloading] = useState(false);
+  const [shareStatus, setShareStatus] = useState('');
 
   const radarData = all_scores.slice(0, 8).map((b) => ({ branch: b.branch, score: b.score }));
+
+  async function handleDownloadPDF() {
+    if (!certificateRef.current) return;
+    setDownloading(true);
+    try {
+      // Snapshot the certificate exactly as rendered (stamp, radar chart, everything)
+      const canvas = await html2canvas(certificateRef.current, {
+        scale: 2, // sharper output for print/PDF
+        backgroundColor: '#F4EFE3',
+        useCORS: true,
+        allowTaint: false,
+        logging: false,
+        imageTimeout: 8000, // fail loudly instead of hanging forever on slow/blocked assets
+      });
+      const imgData = canvas.toDataURL('image/png');
+
+      // Fit the captured image onto an A4 page, scaling to keep aspect ratio
+      const pdf = new jsPDF({ orientation: 'portrait', unit: 'pt', format: 'a4' });
+      const pageWidth = pdf.internal.pageSize.getWidth();
+      const pageHeight = pdf.internal.pageSize.getHeight();
+      const imgWidth = pageWidth - 40; // 20pt margin each side
+      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+      // If content is taller than one page, scale it down to fit instead of cropping
+      const finalHeight = Math.min(imgHeight, pageHeight - 40);
+      const finalWidth = finalHeight === imgHeight ? imgWidth : (canvas.width * finalHeight) / canvas.height;
+
+      pdf.addImage(imgData, 'PNG', 20, 20, finalWidth, finalHeight);
+
+      const safeName = (studentName || 'student').replace(/[^a-z0-9]/gi, '_').toLowerCase();
+      pdf.save(`branchsense-${safeName}-result.pdf`);
+    } catch (err) {
+      console.error('PDF generation failed:', err);
+      alert('Could not generate the PDF. Please try again.');
+    } finally {
+      setDownloading(false);
+    }
+  }
+
+  async function handleShare() {
+    const shareText = `I just got my BranchSense result! Top recommended branch: ${top.name} (${top.score}% match). Check yours at ${window.location.origin}`;
+
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: 'My BranchSense Result',
+          text: shareText,
+          url: window.location.origin,
+        });
+      } catch (err) {
+        if (err.name !== 'AbortError') {
+          console.error('Share failed:', err);
+        }
+      }
+    } else {
+      try {
+        await navigator.clipboard.writeText(shareText);
+        setShareStatus('Copied to clipboard!');
+        setTimeout(() => setShareStatus(''), 2500);
+      } catch (err) {
+        console.error('Clipboard copy failed:', err);
+        setShareStatus('Could not copy — please copy manually.');
+      }
+    }
+  }
 
   return (
     <div className="animate-riseIn">
@@ -17,14 +88,15 @@ export default function ResultCard({ result, studentName, onRestart }) {
         </h1>
       </div>
 
-      {/* Certificate */}
-      <div className="corner-brackets paper-texture relative overflow-hidden rounded-sm p-6 sm:p-10 shadow-2xl">
+      <div
+        ref={certificateRef}
+        className="corner-brackets paper-texture relative overflow-hidden rounded-sm p-6 sm:p-10 shadow-2xl"
+      >
         <div className="text-center font-mono text-[10px] uppercase tracking-[0.3em] text-charcoal/40">
           Certificate of Aptitude Match
         </div>
 
         <div className="mt-6 flex flex-col items-center">
-          {/* Wax seal stamp */}
           <div className="relative flex h-32 w-32 shrink-0 animate-stamp items-center justify-center rounded-full border-[3px] border-brass bg-gradient-to-br from-brass-light to-brass shadow-[0_6px_18px_rgba(201,162,39,0.45)]">
             <div className="absolute inset-2 rounded-full border border-dashed border-ink/30" />
             <div className="text-center leading-tight">
@@ -86,13 +158,25 @@ export default function ResultCard({ result, studentName, onRestart }) {
       </div>
 
       <div className="mt-6 flex gap-3">
-        <button className="flex-1 rounded-sm border-2 border-brass py-2.5 font-mono text-xs font-semibold uppercase tracking-widest text-brass hover:bg-brass/10">
-          Download PDF
+        <button
+          onClick={handleDownloadPDF}
+          disabled={downloading}
+          className="flex-1 rounded-sm border-2 border-brass py-2.5 font-mono text-xs font-semibold uppercase tracking-widest text-brass hover:bg-brass/10 disabled:opacity-40"
+        >
+          {downloading ? 'Generating…' : 'Download PDF'}
         </button>
-        <button className="flex-1 rounded-sm border-2 border-brass py-2.5 font-mono text-xs font-semibold uppercase tracking-widest text-brass hover:bg-brass/10">
+        <button
+          onClick={handleShare}
+          className="flex-1 rounded-sm border-2 border-brass py-2.5 font-mono text-xs font-semibold uppercase tracking-widest text-brass hover:bg-brass/10"
+        >
           Share result
         </button>
       </div>
+
+      {shareStatus && (
+        <p className="mt-2 text-center font-mono text-[11px] text-brass">{shareStatus}</p>
+      )}
+
       <button onClick={onRestart} className="mt-4 w-full text-center font-mono text-[11px] uppercase tracking-widest text-paper/40 underline">
         Start a new attempt
       </button>
