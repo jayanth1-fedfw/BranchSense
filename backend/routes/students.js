@@ -18,8 +18,11 @@ router.post('/register', async (req, res) => {
     );
     res.status(201).json({ student_id: rows[0].id });
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: 'Failed to register student' });
+    console.error('Register student failed:', err);
+    // Surface the real Postgres error message so the frontend/browser shows
+    // the actual cause (e.g. "relation students does not exist", "connect ECONNREFUSED",
+    // "password authentication failed") instead of a generic message.
+    res.status(500).json({ error: `Failed to register student: ${err.message}` });
   }
 });
 
