@@ -62,7 +62,9 @@ export const api = {
   setApiBaseUrl,
   clearApiBaseUrl,
   checkHealth,
-
+  
+  getTopics: () => request('/topics'),
+  
   registerStudent: (payload) =>
     request('/student/register', { method: 'POST', body: JSON.stringify(payload) }),
 
