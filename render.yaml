@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: branchsense-api
+    name: branchsense
     runtime: node
     rootDir: ./backend
     plan: starter
