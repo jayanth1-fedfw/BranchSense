@@ -14,9 +14,22 @@ const pool = require('./db/pool');
 const app = express();
 
 // ── CORS ──────────────────────────────────────────────────────────────────────
-// Allows your frontend (Vercel/Render static site) to call this API
+// Allows your web frontend, the Capacitor Android app, and local dev to call this API
+const allowedOrigins = [
+  'https://branchsense-web.onrender.com',
+  'https://localhost',       // Capacitor Android WebView origin
+  'capacitor://localhost',   // older Capacitor/iOS convention, harmless to include
+  'http://localhost:5173',   // local dev (vite)
+];
+
 app.use(cors({
-  origin: process.env.FRONTEND_URL || '*',
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true,
