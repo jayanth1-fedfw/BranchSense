@@ -8,6 +8,8 @@ const studentsRouter = require('./routes/students');
 const scoresRouter = require('./routes/scores');
 const recommendRouter = require('./routes/recommend');
 const branchesRouter = require('./routes/branches');
+const topicsRouter = require('./routes/topics');
+const healthRouter = require('./routes/health');
 const pool = require('./db/pool');
 
 const app = express();
@@ -56,6 +58,8 @@ app.use('/api/student', studentsRouter);
 app.use('/api/scores', scoresRouter);
 app.use('/api/recommend', recommendRouter);
 app.use('/api/branches', branchesRouter);
+app.use('/api/topics', topicsRouter);
+app.use('/api/health', healthRouter);
 
 // Central error handler as a safety net
 app.use((err, req, res, next) => {
