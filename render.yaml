@@ -2,10 +2,10 @@ services:
   - type: web
     name: branchsense-api
     runtime: node
-    rootDir: ./
+    rootDir: ./backend
     plan: starter
-    buildCommand: cd backend && npm install
-    preDeployCommand: cd backend && node scripts/dbSetup.js || true
+    buildCommand: npm install
+    preDeployCommand: node scripts/dbSetup.js || true
     startCommand: npm start
     healthCheckPath: /health
     envVars:
@@ -21,7 +21,7 @@ services:
     runtime: static
     rootDir: ./frontend
     plan: starter
-    buildCommand: cd frontend && npm install && npm run build
+    buildCommand: npm install && npm run build
     staticPublishPath: dist
     envVars:
       - key: VITE_API_URL
