@@ -194,7 +194,12 @@ export default function App() {
       </main>
 
       <footer className="mx-auto max-w-3xl px-5 pb-8 text-center font-mono text-[10px] tracking-[0.2em] text-paper/25">
-        THIS ADMIT CARD MUST BE PRESENTED AT THE TIME OF COUNSELLING
+        <p>THIS ADMIT CARD IS NOT FOR ANY USE</p>
+        <div className="mt-3 flex justify-center gap-4 normal-case tracking-normal">
+          <a href="/privacy-policy.html" className="underline hover:text-paper/50">Privacy Policy</a>
+          <a href="/about.html" className="underline hover:text-paper/50">About</a>
+          <a href="/contact.html" className="underline hover:text-paper/50">Contact</a>
+        </div>
       </footer>
     </div>
   );
