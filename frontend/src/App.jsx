@@ -36,6 +36,13 @@ export default function App() {
   }, []);
 
   const stepIndex = STEPS.findIndex((s) => s.key === step);
+  useEffect(() => {
+  try {
+    (window.adsbygoogle = window.adsbygoogle || []).push({});
+  } catch (e) {
+    console.error('AdSense push failed', e);
+  }
+}, [step]);
 
   function goToStep(key) {
     const targetIndex = STEPS.findIndex((s) => s.key === key);
@@ -192,7 +199,16 @@ export default function App() {
           <ResultCard result={result} studentName={profile?.name} onRestart={handleRestart} />
         )}
       </main>
-
+      <div className="mx-auto max-w-3xl px-5 pb-4 flex justify-center">
+  <ins
+    className="adsbygoogle"
+    style={{ display: 'block', width: '100%' }}
+    data-ad-client="ca-pub-5297144436489110"
+    data-ad-slot="YOUR_SLOT_ID_HERE"
+    data-ad-format="auto"
+    data-full-width-responsive="true"
+  ></ins>
+</div>
       <footer className="mx-auto max-w-3xl px-5 pb-8 text-center font-mono text-[10px] tracking-[0.2em] text-paper/25">
         <p>THIS ADMIT CARD IS NOT FOR ANY USE</p>
         <div className="mt-3 flex justify-center gap-4 normal-case tracking-normal">
