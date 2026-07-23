@@ -208,6 +208,7 @@ export default function App() {
       data-ad-client="ca-pub-5297144436489110"
       data-ad-slot="6354024465"
       data-ad-format="auto"
+      data-restrict-data-processing="1"
       data-full-width-responsive="true"
     ></ins>
   </div>
